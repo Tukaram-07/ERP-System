@@ -1,5 +1,7 @@
 const express = require('express');
 const {ApolloServer} = require('@apollo/server');
+const { typeDefs } = require('./schema')
+const { resolvers } = require('./resolvers')
 const {expressMiddleware} = require('@apollo/server/express4');
 const bosyParser = require('body-parser');
 const cors = require('cors');
@@ -7,27 +9,7 @@ const { query } = require('express');
 
 async function startServer() {
     const app =express();
-    const server = new ApolloServer({
-        typeDefs: `
-        type Book {
-        id: ID!
-        title: String!
-        }
-        
-        type Query {
-        books: [Book]
-        }
-        `,
-        
-
-        resolvers: {
-            Query: {
-                books: () => [
-                    {id: 1, title: "Anything"},
-                ],
-            }
-        }
-    });
+    const server = new ApolloServer({ resolvers, typeDefs });
 
     app.use(bosyParser.json());
     app.use(cors());
